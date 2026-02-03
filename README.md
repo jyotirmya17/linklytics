@@ -2,18 +2,21 @@
 
 Linklytics is a high-performance **Short Link Analytics Platform** designed for creators and businesses to track and optimize their social media traffic. 
 
-Built with **Next.js 15**, **Convex**, and **Clerk**, it provides real-time redirection and granular analytics without the overhead of traditional backend architectures.
+![Linklytics Landing Page](public/screenshots/landing.png)
 
-![Linklytics Dashboard](https://github.com/jyotirmya17/linklytics/raw/main/public/dashboard-preview.png) *(Note: Add your actual screenshot link here later)*
+Built with **Next.js 15**, **Convex**, and **Clerk**, it provides real-time redirection and granular analytics without the overhead of traditional backend architectures.
 
 ## ✨ Key Features
 
+- **🚀 Live Demo**: [Check out the live app here!](https://www.linklytics.app/)
 - **🚀 Sub-second Redirection**: Catch-all dynamic routes ensure users reach their destination instantly.
 - **📊 Real-time Analytics**: Built-in event tracking for clicks, unique visitors, and platform distribution.
 - **📱 Device & Platform Detection**: Automatically identifies if traffic is coming from Instagram, YouTube, X, or Mobile/Desktop.
 - **💳 Premium Tiering**: Integrated with **Razorpay** for subscription management (Free, Pro, Creator Plus).
 - **🔒 Secure Auth**: robust user management powered by **Clerk**.
 - **⚡ Serverless Backend**: Powered by **Convex** for real-time data sync and sub-100ms database queries.
+
+![Linklytics Dashboard](public/screenshots/dashboard.png)
 
 ## 🛠️ Tech Stack
 
@@ -66,7 +69,7 @@ npx convex dev
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see the dashboard.
+Open [https://www.linklytics.app/](https://www.linklytics.app/) to see the dashboard.
 
 ## 📝 License
 
