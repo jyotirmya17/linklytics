@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
@@ -12,11 +12,7 @@ export default function RedirectPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const slug = params.slug as string;
-
-    // Debug logging
-    useEffect(() => {
-        if (slug) console.log("Resolving slug:", slug);
-    }, [slug]);
+    const hasLogged = useRef(false);
 
     const link = useQuery(api.links.getBySlug, { slug: slug || "" });
     const logClick = useMutation(api.links.logClick);
@@ -25,14 +21,18 @@ export default function RedirectPage() {
         if (link === undefined) return; // Loading
 
         if (link === null) {
-            console.error("Link lookup returned null for slug:", slug);
-            // Link not found
             router.replace("/404");
             return;
         }
 
+        // Guard: only log once per page load
+        if (hasLogged.current) {
+            window.location.href = link.destinationUrl;
+            return;
+        }
+        hasLogged.current = true;
+
         const performRedirect = async () => {
-            // Gather all tracking signals
             const referrer = document.referrer;
             const userAgent = navigator.userAgent;
             const utmSource = searchParams.get("utm_source");
@@ -50,7 +50,6 @@ export default function RedirectPage() {
             } catch (err) {
                 console.error("Failed to log click", err);
             } finally {
-                // Build destination URL and preserve UTM params
                 const destUrl = new URL(link.destinationUrl);
                 searchParams.forEach((value, key) => {
                     if (key.startsWith("utm_") && !destUrl.searchParams.has(key)) {
@@ -62,8 +61,8 @@ export default function RedirectPage() {
         };
 
         performRedirect();
-
-    }, [link, router, logClick, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [link]);
 
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white">

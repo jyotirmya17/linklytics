@@ -26,7 +26,7 @@ export default function Dashboard() {
     const cleanTopPlatform = topPlatform === "direct.com" ? "Direct" : topPlatform;
 
     return (
-        <div className="space-y-8 animate-in fade-in duration-700 pb-10">
+        <div className="space-y-10 animate-in fade-in duration-700 pb-10">
             {/* Split Layout */}
             <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
 
@@ -56,12 +56,11 @@ export default function Dashboard() {
                             <div>
                                 <div className="flex items-center gap-2 mb-2">
                                     <span className="text-slate-400 text-sm font-medium">Link clicks</span>
-                                    <span className="bg-emerald-500/10 text-emerald-500 px-2 py-0.5 rounded-full text-[10px] font-bold">+40%</span>
                                 </div>
                                 <p className="text-5xl font-bold text-white tracking-tighter">{(stats?.totalClicks || 0).toLocaleString()}</p>
                             </div>
                             <div className="flex items-center gap-2 text-slate-400 bg-white/5 border border-white/5 px-4 py-2 rounded-xl text-sm font-medium cursor-pointer hover:bg-white/10 transition-colors">
-                                Anually <ChevronDown className="w-4 h-4" />
+                                Last 7 days <ChevronDown className="w-4 h-4" />
                             </div>
                         </div>
 
@@ -131,47 +130,44 @@ export default function Dashboard() {
                     </div>
                 </div>
 
-                {/* Right Panel: Stats & Highlights */}
+                {/* Right Panel: Stats & Platform Breakdown */}
                 <div className="xl:col-span-5 space-y-6">
                     {/* Top Stats Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {[
-                            { label: "Link clicks", value: stats?.totalClicks || 0, change: "+43%", color: "text-emerald-500" },
-                            { label: "Link visitors", value: stats?.totalVisitors || 0, change: "-29%", color: "text-rose-500" },
-                            { label: "Link referrers", value: stats?.topReferrers?.length || 0, change: "+41%", color: "text-emerald-500" }
+                            { label: "Total clicks", value: stats?.totalClicks || 0 },
+                            { label: "Unique visitors", value: stats?.totalVisitors || 0 },
+                            { label: "Platforms", value: stats?.topReferrers?.length || 0 }
                         ].map((stat, i) => (
                             <div key={i} className="bg-[#0f0f16] p-5 rounded-2xl border border-white/5 shadow-lg">
-                                <div className="flex items-center gap-1.5 mb-3">
-                                    <span className="text-slate-400 text-[10px] font-bold uppercase tracking-tight whitespace-nowrap">{stat.label}</span>
-                                    <span className={`${stat.color} text-[10px] font-bold`}>{stat.change}</span>
-                                </div>
-                                <p className="text-2xl font-bold text-white tracking-tighter">{(stat.value || 0).toLocaleString()}</p>
+                                <span className="text-slate-400 text-[10px] font-bold uppercase tracking-tight whitespace-nowrap">{stat.label}</span>
+                                <p className="text-2xl font-bold text-white tracking-tighter mt-2">{(stat.value || 0).toLocaleString()}</p>
                             </div>
                         ))}
                     </div>
 
-                    {/* Detailed Distribution Card */}
+                    {/* All Platforms Breakdown Card */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-white rounded-[2.5rem] p-8 shadow-2xl relative min-h-[500px]"
+                        className="bg-white rounded-[2.5rem] p-8 shadow-2xl relative"
                     >
                         <Link href="/dashboard/links" className="absolute top-8 right-8 w-10 h-10 bg-primary-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-primary-500/30 hover:bg-primary-500 transition-colors">
                             <ExternalLink className="w-5 h-5" />
                         </Link>
 
                         <div className="flex items-center gap-5 mb-8">
-                            <div className={`w-16 h-16 rounded-full ${stats?.topReferrers?.[0]?.color || "bg-red-500"} flex items-center justify-center shadow-lg shadow-primary-500/20`}>
+                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-500 to-violet-600 flex items-center justify-center shadow-lg shadow-primary-500/20">
                                 <TrendingUp className="w-8 h-8 text-white" />
                             </div>
                             <div>
-                                <h2 className="text-2xl font-black text-slate-900 leading-none">{cleanTopPlatform}</h2>
-                                <p className="text-slate-400 text-sm mt-1 leading-snug max-w-[200px]">Top performing platform analytics for your active links...</p>
+                                <h2 className="text-2xl font-black text-slate-900 leading-none">Platform Stats</h2>
+                                <p className="text-slate-400 text-sm mt-1 leading-snug max-w-[220px]">Click distribution across all platforms</p>
                             </div>
                         </div>
 
                         {/* Tabs */}
-                        <div className="flex items-center gap-6 border-b border-slate-100 mb-8 overflow-x-auto">
+                        <div className="flex items-center gap-6 border-b border-slate-100 mb-6 overflow-x-auto">
                             {["DETAILS", "ACTIVITY", "NOTES"].map((tab) => (
                                 <span
                                     key={tab}
@@ -183,7 +179,6 @@ export default function Dashboard() {
                             ))}
                         </div>
 
-                        {/* Distribution Card Content */}
                         <AnimatePresence mode="wait">
                             {activeTab === "DETAILS" && (
                                 <motion.div
@@ -191,47 +186,46 @@ export default function Dashboard() {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="grid grid-cols-2 gap-x-12 items-start"
+                                    className="space-y-4"
                                 >
-                                    <div className="space-y-6">
-                                        <span className="text-[10px] font-black text-slate-300 tracking-widest uppercase">Referrer</span>
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-2.5 h-2.5 rounded-full ${stats?.topReferrers?.[0]?.color || "bg-red-500"}`} />
-                                            <span className="text-slate-600 font-bold text-sm">{cleanTopPlatform === "Direct" ? "Direct" : cleanTopPlatform.toLowerCase().endsWith(".com") ? cleanTopPlatform.toLowerCase() : cleanTopPlatform.toLowerCase() + ".com"}</span>
-                                        </div>
-                                        <div className="pt-4">
-                                            <span className="text-[10px] font-black text-slate-300 tracking-widest uppercase mb-4 block">Visits</span>
-                                            <div className="flex items-center gap-2">
-                                                <TrendingUp className="w-5 h-5 text-emerald-500" />
-                                                <span className="text-2xl font-black text-slate-900">{(stats?.topReferrers?.[0]?.visits || 0).toLocaleString()}</span>
-                                            </div>
-                                        </div>
-                                        <div className="pt-2">
-                                            <span className="text-[10px] font-black text-slate-300 tracking-widest uppercase mb-2 block">Distribution</span>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sm font-black text-slate-900">{stats?.topReferrers?.[0]?.percentage || 0}%</span>
-                                                <span className="text-xs text-slate-400">📊 (High)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-6">
-                                        <span className="text-[10px] font-black text-slate-300 tracking-widest uppercase">Distribution</span>
-                                        <div className="space-y-4">
-                                            {(stats?.platformDistribution || []).map((item, i) => (
-                                                <div key={i} className="flex items-center gap-3">
-                                                    <div className="flex-1 h-1.5 bg-slate-50 rounded-full overflow-hidden">
-                                                        <motion.div
-                                                            initial={{ width: 0 }}
-                                                            animate={{ width: `${item.value || 0}%` }}
-                                                            className={`h-full ${item.color || "bg-slate-500"} rounded-full`}
-                                                        />
+                                    {(stats?.topReferrers || []).length > 0 ? (
+                                        stats?.topReferrers?.map((platform, i) => {
+                                            const name = platform.name === "direct.com" ? "Direct" : platform.name;
+                                            return (
+                                                <motion.div
+                                                    key={i}
+                                                    initial={{ opacity: 0, x: -5 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    transition={{ delay: i * 0.05 }}
+                                                    className="flex items-center gap-4"
+                                                >
+                                                    <div className={`w-3 h-3 rounded-full shrink-0 ${platform.color || "bg-slate-400"}`} />
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex items-center justify-between mb-1.5">
+                                                            <span className="text-sm font-bold text-slate-800 truncate">{name}</span>
+                                                            <div className="flex items-center gap-3 shrink-0">
+                                                                <span className="text-xs font-bold text-slate-500">{platform.visits} clicks</span>
+                                                                <span className="text-xs font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded-full">{platform.percentage}%</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                                            <motion.div
+                                                                initial={{ width: 0 }}
+                                                                animate={{ width: `${platform.percentage || 0}%` }}
+                                                                transition={{ duration: 0.8, delay: i * 0.1 }}
+                                                                className={`h-full rounded-full ${platform.color || "bg-slate-400"}`}
+                                                            />
+                                                        </div>
                                                     </div>
-                                                    <span className="text-[10px] font-bold text-slate-400 w-8">{item.value || 0}%</span>
-                                                </div>
-                                            ))}
+                                                </motion.div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center py-10 text-slate-300">
+                                            <TrendingUp className="w-12 h-12 mb-2 opacity-20" />
+                                            <p className="text-sm font-medium">No platform data yet</p>
                                         </div>
-                                    </div>
+                                    )}
                                 </motion.div>
                             )}
 
@@ -241,7 +235,7 @@ export default function Dashboard() {
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     exit={{ opacity: 0, y: -10 }}
-                                    className="space-y-4"
+                                    className="space-y-3"
                                 >
                                     {(stats?.recentClicks || []).length > 0 ? (
                                         stats?.recentClicks?.map((click, i) => (
@@ -303,7 +297,7 @@ export default function Dashboard() {
                                                 <Info className="w-4 h-4" />
                                                 <span className="text-[10px] font-black uppercase tracking-widest">Tip</span>
                                             </div>
-                                            <p className="text-xs font-bold text-slate-900">Add a custom UTM param for better tracking.</p>
+                                            <p className="text-xs font-bold text-slate-900">Add ?utm_source=platform to your link for accurate tracking.</p>
                                         </div>
                                     </div>
                                 </motion.div>
