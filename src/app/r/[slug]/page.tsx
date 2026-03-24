@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
 import { detectPlatform, detectDevice } from "@/lib/detect-platform";
@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 export default function RedirectPage() {
     const params = useParams();
     const router = useRouter();
+    const searchParams = useSearchParams();
     const slug = params.slug as string;
 
     // Debug logging
@@ -31,10 +32,11 @@ export default function RedirectPage() {
         }
 
         const performRedirect = async () => {
-            // Basic tracking
+            // Gather all tracking signals
             const referrer = document.referrer;
             const userAgent = navigator.userAgent;
-            const platform = detectPlatform(referrer, userAgent);
+            const utmSource = searchParams.get("utm_source");
+            const platform = detectPlatform(referrer, userAgent, utmSource);
             const device = detectDevice(userAgent);
 
             try {
@@ -44,20 +46,24 @@ export default function RedirectPage() {
                     referrer: referrer || undefined,
                     userAgent,
                     device
-                    // Country/City would typically be done via headers/Edge function 
-                    // but we'll skip for this client-side impl
                 });
             } catch (err) {
                 console.error("Failed to log click", err);
             } finally {
-                // Always redirect even if logging fails
-                window.location.href = link.destinationUrl;
+                // Build destination URL and preserve UTM params
+                const destUrl = new URL(link.destinationUrl);
+                searchParams.forEach((value, key) => {
+                    if (key.startsWith("utm_") && !destUrl.searchParams.has(key)) {
+                        destUrl.searchParams.set(key, value);
+                    }
+                });
+                window.location.href = destUrl.toString();
             }
         };
 
         performRedirect();
 
-    }, [link, router, logClick]);
+    }, [link, router, logClick, searchParams]);
 
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white">
