@@ -77,6 +77,18 @@ const UA_PATTERNS: Array<{ pattern: string; platform: string }> = [
 ];
 
 const REFERRER_PATTERNS: Array<{ pattern: string; platform: string }> = [
+    // Android intent-based referrers (app package names)
+    { pattern: "android-app://com.whatsapp", platform: "WhatsApp" },
+    { pattern: "android-app://com.instagram", platform: "Instagram" },
+    { pattern: "android-app://com.facebook", platform: "Facebook" },
+    { pattern: "android-app://com.twitter", platform: "X" },
+    { pattern: "android-app://com.google.android.youtube", platform: "YouTube" },
+    { pattern: "android-app://com.zhiliaoapp.musically", platform: "TikTok" },
+    { pattern: "android-app://com.linkedin", platform: "LinkedIn" },
+    { pattern: "android-app://com.snapchat", platform: "Snapchat" },
+    { pattern: "android-app://org.telegram", platform: "Telegram" },
+    { pattern: "android-app://com.reddit", platform: "Reddit" },
+    // Standard URL-based referrers
     { pattern: "instagram.com", platform: "Instagram" },
     { pattern: "youtube.com", platform: "YouTube" },
     { pattern: "youtu.be", platform: "YouTube" },
@@ -89,6 +101,7 @@ const REFERRER_PATTERNS: Array<{ pattern: string; platform: string }> = [
     { pattern: "linkedin.com", platform: "LinkedIn" },
     { pattern: "whatsapp.com", platform: "WhatsApp" },
     { pattern: "wa.me", platform: "WhatsApp" },
+    { pattern: "l.whatsapp.com", platform: "WhatsApp" },
     { pattern: "snapchat.com", platform: "Snapchat" },
     { pattern: "reddit.com", platform: "Reddit" },
     { pattern: "pinterest.com", platform: "Pinterest" },
@@ -109,7 +122,6 @@ export function detectPlatform(
         const normalized = utmSource.toLowerCase().trim();
         const mapped = UTM_TO_PLATFORM[normalized];
         if (mapped) return mapped;
-        // If utm_source is set but not in our map, capitalize and return it directly
         return normalized.charAt(0).toUpperCase() + normalized.slice(1);
     }
 
@@ -121,7 +133,7 @@ export function detectPlatform(
         }
     }
 
-    // ── 3. Referrer Detection (works when referrer isn't stripped) ──
+    // ── 3. Referrer Detection (URL-based + Android intent-based) ──
     if (referrer && referrer.length > 0) {
         const r = referrer.toLowerCase();
         for (const { pattern, platform } of REFERRER_PATTERNS) {

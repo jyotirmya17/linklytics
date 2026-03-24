@@ -35,7 +35,7 @@ export default function DashboardLayout({
                 setIsCollapsed={setIsSidebarCollapsed}
             />
 
-            <main className={`transition-all duration-300 min-h-screen pt-20 lg:pt-8 ${isSidebarCollapsed ? "lg:pl-20" : "lg:pl-64"}`}>
+            <main className={`transition-all duration-300 min-h-screen pt-20 lg:pt-16 ${isSidebarCollapsed ? "lg:pl-20" : "lg:pl-64"}`}>
                 <div className="container mx-auto p-4 lg:px-10 lg:py-8 max-w-7xl">
                     {children}
                 </div>
